@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanitation Department, TMC Korangi — Directory &amp; Query Portal</title>
+<style>
+  :root{
+    --ink:#16241F;
+    --paper:#F5F4EE;
+    --paper-dim:#EDEBE1;
+    --teal:#1E5C50;
+    --teal-deep:#123932;
+    --masthead:#0E2622;
+    --gold:#B98B2A;
+    --gold-soft:#F1E4C8;
+    --line:#D9D4C7;
+    --muted:#5B6B63;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Segoe UI", system-ui, -apple-system, "Noto Sans", sans-serif;
+    line-height:1.5;
+  }
+  h1,h2{
+    font-family:Georgia,"Iowan Old Style","Times New Roman",serif;
+    font-weight:600;
+    margin:0;
+  }
+  a{color:var(--teal-deep);}
+  .skip-link{
+    position:absolute;
+    left:-999px;
+    top:0;
+    background:var(--gold);
+    color:var(--ink);
+    padding:0.6rem 1rem;
+    z-index:10;
+  }
+  .skip-link:focus{left:0.5rem; top:0.5rem;}
+
+  /* Masthead breadcrumb */
+  .masthead{
+    background:var(--masthead);
+    color:#C9D6D1;
+    font-size:0.82rem;
+    padding:0.5rem 1.25rem;
+  }
+  .masthead-inner{max-width:800px; margin:0 auto;}
+
+  header.site-head{
+    background:linear-gradient(180deg, var(--teal) 0%, var(--teal-deep) 100%);
+    color:var(--paper);
+    padding:2.4rem 1.25rem 2rem;
+    border-bottom:3px solid var(--gold);
+  }
+  .head-inner{
+    max-width:800px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:1.2rem;
+  }
+  .seal{
+    flex:0 0 auto;
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    border:2px solid var(--gold);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:Georgia,serif;
+    font-size:1rem;
+    letter-spacing:0.03em;
+    background:rgba(0,0,0,0.12);
+  }
+  h1{font-size:1.75rem; color:var(--paper); letter-spacing:0.01em;}
+  .head-sub{margin:0.35rem 0 0; color:#D7E4DF; font-size:1rem;}
+  .head-jurisdiction{font-size:0.82rem; margin-top:0.2rem; color:#AFC4BC;}
+
+  /* Quick info strip */
+  .quickinfo{
+    background:var(--paper-dim);
+    border-bottom:1px solid var(--line);
+  }
+  .quickinfo-inner{
+    max-width:800px;
+    margin:0 auto;
+    padding:0.9rem 1.25rem;
+    display:flex;
+    flex-wrap:wrap;
+    gap:1.4rem 2rem;
+    font-size:0.88rem;
+    color:var(--muted);
+  }
+  .quickinfo-item{display:flex; align-items:center; gap:0.45rem;}
+  .quickinfo-item svg{flex:0 0 auto; width:16px; height:16px; stroke:var(--teal-deep);}
+  .quickinfo-item a{color:var(--teal-deep); text-decoration:none;}
+  .quickinfo-item a:hover, .quickinfo-item a:focus{text-decoration:underline;}
+
+  main{max-width:800px; margin:0 auto; padding:2rem 1.25rem 3rem;}
+
+  .intro{color:var(--muted); font-size:0.98rem; margin-bottom:1.7rem; max-width:62ch;}
+
+  .search-wrap{margin-bottom:2rem;}
+  label.search-label{display:block; font-size:0.9rem; margin-bottom:0.4rem; color:var(--muted);}
+  #search{
+    width:100%;
+    padding:0.7rem 0.85rem;
+    border:1px solid var(--line);
+    border-radius:2px;
+    background:#fff;
+    font-size:1rem;
+    color:var(--ink);
+  }
+  #search:focus{outline:2px solid var(--teal); outline-offset:1px;}
+  .result-count{font-size:0.85rem; color:var(--muted); margin-top:0.45rem;}
+
+  section.group{margin-bottom:2.3rem;}
+  section.group h2{
+    font-size:1.2rem;
+    padding-left:0.75rem;
+    border-left:3px solid var(--gold);
+    margin-bottom:1rem;
+  }
+  ul.entries{list-style:none; margin:0; padding:0;}
+  li.entry{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:1rem;
+    padding:0.8rem 0.3rem;
+    border-bottom:1px solid var(--line);
+  }
+  li.entry:first-child{border-top:1px solid var(--line);}
+  li.entry:hover{background:rgba(30,92,80,0.05);}
+  .who{min-width:0;}
+  .name{font-weight:600;}
+  .role{color:var(--muted); font-size:0.92rem;}
+  .phone{
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+    font-size:0.96rem;
+  }
+  .phone a{
+    color:var(--teal-deep);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+  }
+  .phone a:hover, .phone a:focus{border-bottom-color:var(--teal-deep);}
+  li.entry.is-hidden{display:none;}
+
+  .ask-panel{
+    background:var(--gold-soft);
+    border-left:3px solid var(--gold);
+    padding:1.4rem 1.5rem;
+    margin-bottom:0.5rem;
+  }
+  .ask-panel h2{border-left:none; padding-left:0;}
+  .ask-panel .intro{margin-bottom:1.1rem;}
+  .ask-btn{
+    display:inline-block;
+    background:var(--teal);
+    color:var(--paper);
+    text-decoration:none;
+    padding:0.75rem 1.4rem;
+    border-radius:2px;
+    font-size:0.98rem;
+    border:1px solid var(--teal-deep);
+  }
+  .ask-btn:hover, .ask-btn:focus{background:var(--teal-deep);}
+
+  footer{
+    background:var(--masthead);
+    color:#C9D6D1;
+    padding:2rem 1.25rem 1.5rem;
+  }
+  .footer-inner{
+    max-width:800px;
+    margin:0 auto;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:1.5rem;
+    font-size:0.85rem;
+  }
+  .footer-col{max-width:34ch;}
+  .footer-col h3{
+    font-family:Georgia,serif;
+    font-size:0.95rem;
+    color:var(--paper);
+    margin:0 0 0.5rem;
+    font-weight:600;
+  }
+  .footer-col p{margin:0.2rem 0; color:#AFC4BC;}
+  .footer-rule{
+    max-width:800px;
+    margin:1.5rem auto 0;
+    padding-top:1rem;
+    border-top:1px solid rgba(255,255,255,0.15);
+    font-size:0.78rem;
+    color:#8FA69D;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to directory</a>
+
+<div class="masthead">
+  <div class="masthead-inner">Government of Sindh &nbsp;›&nbsp; Local Government Department &nbsp;›&nbsp; TMC Korangi &nbsp;›&nbsp; Sanitation Department</div>
+</div>
+
+<header class="site-head">
+  <div class="head-inner">
+    <div class="seal" aria-hidden="true">TMC</div>
+    <div>
+      <h1>Sanitation Department — TMC Korangi</h1>
+      <p class="head-sub">Staff directory &amp; public query portal</p>
+      <p class="head-jurisdiction">Town Municipal Corporation Korangi, Government of Sindh</p>
+    </div>
+  </div>
+</header>
+
+<div class="quickinfo">
+  <div class="quickinfo-inner">
+    <span class="quickinfo-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      ST-1/3, Sector 41-B, Korangi No. 2½, Karachi
+    </span>
+    <span class="quickinfo-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <a href="tel:02199333929">021-99333929</a>
+    </span>
+    <span class="quickinfo-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Mon–Sat, 9:00 AM – 4:00 PM
+    </span>
+  </div>
+</div>
+
+<main id="main">
+  <p class="intro">A single page to find the right person and number quickly, instead of asking around the office. Type a name or a designation below to filter the list — or tap a number to call directly.</p>
+
+  <div class="search-wrap">
+    <label class="search-label" for="search">Search by name or designation</label>
+    <input type="text" id="search" placeholder="e.g. Director, Supervisor, Accounts" autocomplete="off">
+    <p class="result-count" id="resultCount" aria-live="polite">Showing 11 of 11 entries</p>
+  </div>
+
+  <section class="group" aria-labelledby="admin-h">
+    <h2 id="admin-h">Administration</h2>
+    <ul class="entries">
+      <li class="entry"><span class="who"><span class="name">Muhammad Younus</span><br><span class="role">Director (Sanitation)</span></span><span class="phone"><a href="tel:03000000001">0300-0000001</a></span></li>
+      <li class="entry"><span class="who"><span class="name">Sample Officer 2</span><br><span class="role">Deputy Director (Sanitation)</span></span><span class="phone"><a href="tel:03000000002">0300-0000002</a></span></li>
+      <li class="entry"><span class="who"><span class="name">Sample Officer 3</span><br><span class="role">Assistant Director (Admin)</span></span><span class="phone"><a href="tel:03000000003">0300-0000003</a></span></li>
+    </ul>
+  </section>
+
+  <section class="group" aria-labelledby="field-h">
+    <h2 id="field-h">Field Supervisors</h2>
+    <ul class="entries">
+      <li class="entry"><span class="who"><span class="name">Sample Supervisor 1</span><br><span class="role">Sanitary Supervisor — Zone 1</span></span><span class="phone"><a href="tel:03000000004">0300-0000004</a></span></li>
+      <li class="entry"><span class="who"><span class="name">Sample Supervisor 2</span><br><span class="role">Sanitary Supervisor — Zone 2</span></span><span class="phone"><a href="tel:03000000005">0300-0000005</a></span></li>
+      <li class="entry"><span class="who"><span class="name">Sample Supervisor 3</span><br><span class="role">Sanitary Supervisor — Zone 3</span></span><span class="phone"><a href="tel:03000000006">0300-0000006</a></span></li>
+    </ul>
+  </section>
+
+  <section class="group" aria-labelledby="support-h">
+    <h2 id="support-h">Office Support</h2>
+    <ul class="entries">
+      <li class="entry"><span class="who"><span class="name">Moosa Khan</span><br><span class="role">Naib Qasid</span></span><span class="phone"><a href="tel:03423210311">0342-3210311</a></span></li>
+      <li class="entry"><span class="who"><span class="name">Sample Staff 1</span><br><span class="role">Naib Qasid</span></span><span class="phone"><a href="tel:03000000007">0300-0000007</a></span></li>
+      <li class="entry"><span class="who"><span class="name">Sample Staff 2</span><br><span class="role">Daftri</span></span><span class="phone"><a href="tel:03000000008">0300-0000008</a></span></li>
+      <li class="entry"><span class="who"><span class="name">Sample Officer 4</span><br><span class="role">Sr. Accounts Officer</span></span><span class="phone"><a href="tel:03000000009">0300-0000009</a></span></li>
+    </ul>
+  </section>
+
+  <section class="group" aria-labelledby="health-h">
+    <h2 id="health-h">Health &amp; Emergency</h2>
+    <ul class="entries">
+      <li class="entry"><span class="who"><span class="name">Sample Officer 5</span><br><span class="role">Chief Medical Officer</span></span><span class="phone"><a href="tel:03000000010">0300-0000010</a></span></li>
+    </ul>
+  </section>
+
+  <!--
+    HOW TO ACTIVATE THIS SECTION (using SurveyHeart, since you already
+    have the app):
+    1. Open SurveyHeart and create a new form with fields:
+       "Your question / message" (long text), "Your name" (short text),
+       "Phone / WhatsApp" (short text), "Email (optional)" (short text).
+    2. Tap Share and copy the form link. Respondents do NOT need a
+       SurveyHeart account to fill it — only you (the creator) need
+       one, which you already have.
+    3. Paste that link below, replacing the href on the button.
+    4. Every submission appears in your SurveyHeart dashboard/app in
+       real time, and can be exported to Excel/CSV/PDF anytime.
+  -->
+  <section class="group ask-panel" aria-labelledby="ask-h">
+    <h2 id="ask-h">Ask a Question</h2>
+    <p class="intro">Have a question or complaint for the Sanitation Department? Submit it here — it will be reviewed and answered.</p>
+    <a href="https://form.svhrt.com/6aa858df40f4070ec1512568" class="ask-btn">Open the question form</a>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h3>Sanitation Department</h3>
+      <p>Staff directory maintained by the Naib Qasid's office.</p>
+      <p>Contact details are being finalized in coordination with the department; for urgent matters, please visit the office directly.</p>
+    </div>
+    <div class="footer-col">
+      <h3>Head Office</h3>
+      <p>ST-1/3, Sector 41-B, Korangi No. 2½, Near Chiniot General Hospital, Karachi</p>
+      <p>021-99333929 &nbsp;·&nbsp; tmckorangi@gmail.com</p>
+    </div>
+  </div>
+  <div class="footer-rule">Town Municipal Corporation Korangi, Government of Sindh</div>
+</footer>
+
+<script>
+  (function(){
+    var input = document.getElementById('search');
+    var entries = Array.prototype.slice.call(document.querySelectorAll('li.entry'));
+    var countEl = document.getElementById('resultCount');
+    var total = entries.length;
+
+    function normalize(str){ return str.toLowerCase(); }
+
+    function filter(){
+      var q = normalize(input.value.trim());
+      var visible = 0;
+      entries.forEach(function(li){
+        var text = normalize(li.textContent);
+        var match = q === '' || text.indexOf(q) !== -1;
+        li.classList.toggle('is-hidden', !match);
+        if(match) visible++;
+      });
+      document.querySelectorAll('section.group').forEach(function(section){
+        if(!section.querySelector('ul.entries')) return;
+        var anyVisible = section.querySelectorAll('li.entry:not(.is-hidden)').length > 0;
+        section.style.display = anyVisible ? '' : 'none';
+      });
+      countEl.textContent = 'Showing ' + visible + ' of ' + total + ' entries';
+    }
+
+    input.addEventListener('input', filter);
+  })();
+</script>
+
+</body>
+</html>
